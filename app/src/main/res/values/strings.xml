@@ -181,6 +181,9 @@
     <string name="go_ahead_i_m_listening">Go ahead, I’m listening!</string>
     <string name="processing_your_speech">Processing your speech…</string>
     <string name="got_it">Got it!</string>
+    <string name="microphone_permission_needed">Microphone Permission Needed</string>
+    <string name="this_feature_requires_microphone_access_to_listen_to_your_voice">This feature requires microphone access to listen to your voice.</string>
+    <string name="microphone_permission_has_been_permanently_denied_please_enable_it_in_app_settings">Microphone permission has been permanently denied. Please enable it in app settings.</string>
 
     <string name="reset_to_defaults">Reset to defaults</string>
     <string name="yes">Yes</string>

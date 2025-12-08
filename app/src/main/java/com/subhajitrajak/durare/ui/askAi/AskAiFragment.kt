@@ -1,6 +1,7 @@
 package com.subhajitrajak.durare.ui.askAi
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,7 +14,6 @@ import android.speech.SpeechRecognizer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -30,6 +30,7 @@ import com.subhajitrajak.durare.auth.GoogleAuthUiClient
 import com.subhajitrajak.durare.auth.UserData
 import com.subhajitrajak.durare.data.models.AiUserStats
 import com.subhajitrajak.durare.data.repositories.AiChatRepository
+import com.subhajitrajak.durare.databinding.DialogPermissionBinding
 import com.subhajitrajak.durare.databinding.FragmentAskAiBinding
 import com.subhajitrajak.durare.utils.remove
 import com.subhajitrajak.durare.utils.show
@@ -56,7 +57,11 @@ class AskAiFragment : Fragment() {
         if (isGranted) {
             startListening()
         } else {
-            showToast(requireContext(), "Microphone permission is required to use speech-to-text")
+            if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                showPermissionRationale()
+            } else {
+                showGoToSettingsDialog()
+            }
         }
     }
 
@@ -271,7 +276,7 @@ class AskAiFragment : Fragment() {
                     SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "No speech detected."
                     else -> "Speech error: $error"
                 }
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                showToast(requireContext(), message)
             }
 
             override fun onResults(results: Bundle?) {
@@ -293,7 +298,7 @@ class AskAiFragment : Fragment() {
 
     private fun setupSpeechRecognition() {
         if (!SpeechRecognizer.isRecognitionAvailable(requireContext())) {
-            Toast.makeText(requireContext(), "Speech recognition is not available on this device.", Toast.LENGTH_SHORT).show()
+            showToast(requireContext(), "Speech recognition is not available on this device.")
             binding.speakButton.isEnabled = false
             return
         }
@@ -307,22 +312,10 @@ class AskAiFragment : Fragment() {
         }
 
         binding.speakButton.setOnClickListener {
-            when {
-                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED -> {
-                    startListening()
-                }
-                shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) -> {
-                    showToast(requireContext(), "Microphone permission is needed for speech-to-text")
-                    requestMicPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-                }
-                else -> {
-                    showToast(requireContext(), "Enable microphone permission from settings")
-                    startActivity(
-                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                            data = Uri.fromParts("package", requireContext().packageName, null)
-                        }
-                    )
-                }
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                startListening()
+            } else {
+                requestMicPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
             }
         }
 
@@ -330,6 +323,67 @@ class AskAiFragment : Fragment() {
             speechRecognizer.stopListening()
         }
     }
+
+    private fun showPermissionRationale() {
+        showCustomDialog(
+            title = getString(R.string.microphone_permission_needed),
+            message = getString(R.string.this_feature_requires_microphone_access_to_listen_to_your_voice),
+            positiveText = getString(R.string.ok),
+            onPositiveClick = {
+                requestMicPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        )
+    }
+
+    private fun showGoToSettingsDialog() {
+        showCustomDialog(
+            title = getString(R.string.permission_required),
+            message = getString(R.string.microphone_permission_has_been_permanently_denied_please_enable_it_in_app_settings),
+            positiveText = getString(R.string.go_to_settings),
+            onPositiveClick = {
+                val intent = Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.fromParts("package", requireActivity().packageName, null)
+                )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+        )
+    }
+
+    private fun showCustomDialog(
+        title: String,
+        message: String,
+        positiveText: String,
+        negativeText: String = getString(R.string.cancel),
+        onPositiveClick: () -> Unit,
+        onNegativeClick: () -> Unit = {}
+    ) {
+        val dialogBinding = DialogPermissionBinding.inflate(layoutInflater)
+
+        dialogBinding.dialogTitle.text = title
+        dialogBinding.dialogMessage.text = message
+        dialogBinding.dialogOk.text = positiveText
+        dialogBinding.dialogCancel.text = negativeText
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogBinding.root)
+            .create()
+
+        dialogBinding.dialogCancel.setOnClickListener {
+            dialog.dismiss()
+            onNegativeClick()
+        }
+
+        dialogBinding.dialogOk.setOnClickListener {
+            dialog.dismiss()
+            onPositiveClick()
+        }
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
+    }
+
 
     private fun handleBackButtonPress() {
         if (isAdded) {
