@@ -22,8 +22,8 @@ android {
         applicationId = "com.subhajitrajak.durare"
         minSdk = 26
         targetSdk = 36
-        versionCode = 18
-        versionName = "0.5.1"
+        versionCode = 19
+        versionName = "0.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -94,7 +94,7 @@ dependencies {
     implementation(libs.dotsindicator)
 
     // Firebase Bom
-    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation(platform(libs.firebase.bom))
 
     // firebase auth
     implementation(libs.firebase.auth)
@@ -138,7 +138,7 @@ dependencies {
     implementation(libs.firebase.ai)
 
     // play integrity
-    implementation("com.google.android.play:integrity:1.6.0")
-    implementation("com.google.firebase:firebase-appcheck-playintegrity")
-    implementation("com.google.firebase:firebase-appcheck-debug")
+    implementation(libs.integrity)
+    implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.firebase.appcheck.debug)
 }
