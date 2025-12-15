@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.subhajitrajak.durare.exercise.ExerciseType
 import com.subhajitrajak.durare.databinding.ActivityHomeBinding
 import com.subhajitrajak.durare.ui.counter.CounterActivity
 import com.subhajitrajak.durare.ui.dashboard.WorkoutSetupDialog
@@ -105,6 +106,7 @@ class HomeActivity : AppCompatActivity() {
         val intent = Intent(this, CounterActivity::class.java).apply {
             putExtra(Preferences.KEY_TOTAL_REPS, totalReps)
             putExtra(Preferences.KEY_REST_TIME, restTimeMs)
+            putExtra("exercise_type", ExerciseType.PUSH_UP.name)
         }
         startActivity(intent)
     }

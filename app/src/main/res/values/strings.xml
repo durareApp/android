@@ -91,6 +91,11 @@
     <string name="up_threshold_value">25</string>
     <string name="up_threshold_desc">Increase if new push-ups aren’t counted after going up. Decrease if it counts too quickly before you finish moving up.</string>
 
+    <!-- Chin up -->
+    <string name="status_hold_position">Hold position…</string>
+    <string name="status_ready1">Ready</string>
+    <string name="status_great1">Great!</string>
+
     <!-- Onboarding strings -->
     <string name="onboarding_title_1">track your push-ups.\nanytime. anywhere.</string>
     <string name="onboarding_body_1">Build strength and consistency with a\nsmart push-up counter designed to\nkeep you motivated.</string>

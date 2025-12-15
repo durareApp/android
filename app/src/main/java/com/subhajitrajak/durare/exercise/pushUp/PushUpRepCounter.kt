@@ -1,10 +1,11 @@
-package com.subhajitrajak.durare.utils
+package com.subhajitrajak.durare.exercise.pushUp
 
 import com.subhajitrajak.durare.R
+import com.subhajitrajak.durare.utils.Preferences
 import kotlin.math.max
 import kotlin.math.min
 
-class PushUpDetector(
+class PushUpRepCounter(
     private val listener: Listener,
     preferences: Preferences
 ) {

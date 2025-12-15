@@ -40,6 +40,7 @@ roomRuntime = "2.8.2"
 swiperefreshlayout = "1.1.0"
 vico = "2.2.0"
 markwon = "4.6.2"
+poseDetection = "18.0.0-beta5"
 
 [libraries]
 androidchart = { module = "com.github.AppDevNext:AndroidChart", version.ref = "androidchart" }
@@ -56,6 +57,8 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 dotsindicator = { module = "com.tbuonomo:dotsindicator", version.ref = "dotsindicator" }
 face-detection = { module = "com.google.mlkit:face-detection", version.ref = "faceDetection" }
+pose-detection = { group = "com.google.mlkit", name = "pose-detection", version.ref = "poseDetection" }
+pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetection" }
 firebase-ai = { module = "com.google.firebase:firebase-ai", version.ref = "firebaseAi" }
 firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
 firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }

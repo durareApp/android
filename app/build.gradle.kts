@@ -63,12 +63,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.pose.detection)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     // ML Kit Face Detection
     implementation(libs.face.detection)
+    implementation(libs.pose.detection.common)
     
     // CameraX dependencies
     implementation(libs.androidx.camera.core)

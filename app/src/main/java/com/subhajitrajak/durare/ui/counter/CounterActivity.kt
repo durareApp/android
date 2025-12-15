@@ -16,10 +16,8 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.view.View
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
@@ -34,20 +32,25 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.LifecycleOwner
 import com.google.firebase.auth.FirebaseAuth
-import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
-import com.google.mlkit.vision.face.FaceDetector
 import com.google.mlkit.vision.face.FaceDetectorOptions
+import com.google.mlkit.vision.pose.PoseDetection
+import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.subhajitrajak.durare.R
+import com.subhajitrajak.durare.exercise.chinUp.ChinUpPoseAnalyzer
+import com.subhajitrajak.durare.exercise.ExerciseFrameAnalyzer
+import com.subhajitrajak.durare.exercise.ExerciseType
+import com.subhajitrajak.durare.exercise.pushUp.PushUpFaceAnalyzer
 import com.subhajitrajak.durare.data.models.DailyPushStats
 import com.subhajitrajak.durare.data.repositories.StatsRepository
 import com.subhajitrajak.durare.databinding.ActivityCounterBinding
-import com.subhajitrajak.durare.utils.reminderUtils.RestAlarmReceiver
 import com.subhajitrajak.durare.ui.shareStats.ShareStatsActivity
+import com.subhajitrajak.durare.exercise.chinUp.ChinUpRepCounter
 import com.subhajitrajak.durare.utils.Constants.DATE_FORMAT
 import com.subhajitrajak.durare.utils.Preferences
-import com.subhajitrajak.durare.utils.PushUpDetector
+import com.subhajitrajak.durare.exercise.pushUp.PushUpRepCounter
 import com.subhajitrajak.durare.utils.log
+import com.subhajitrajak.durare.utils.reminderUtils.RestAlarmReceiver
 import com.subhajitrajak.durare.utils.showToast
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -56,7 +59,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.max
 
-class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
+class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
 
     private val binding: ActivityCounterBinding by lazy {
         ActivityCounterBinding.inflate(layoutInflater)
@@ -67,8 +70,7 @@ class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
     }
 
     private lateinit var cameraExecutor: ExecutorService
-    private lateinit var faceDetector: FaceDetector
-    private lateinit var pushUpDetector: PushUpDetector
+    private lateinit var exerciseFrameAnalyzer: ExerciseFrameAnalyzer
     private var toneGenerator: ToneGenerator? = null
     private var vibrator: Vibrator? = null
 
@@ -152,6 +154,51 @@ class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
             finish()
         }
 
+        val exerciseType = ExerciseType.valueOf(
+            intent.getStringExtra("exercise_type") ?: ExerciseType.PUSH_UP.name
+        )
+
+        exerciseFrameAnalyzer = when (exerciseType) {
+
+            ExerciseType.PUSH_UP -> {
+                val repCounter = PushUpRepCounter(this, prefs)
+
+                val faceOptions = FaceDetectorOptions.Builder()
+                    .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+                    .setMinFaceSize(0.1f)
+                    .build()
+
+                PushUpFaceAnalyzer(
+                    FaceDetection.getClient(faceOptions),
+                    repCounter
+                )
+            }
+
+            ExerciseType.CHIN_UP -> {
+                val repCounter = ChinUpRepCounter(object : ChinUpRepCounter.Listener {
+                    override fun onCountChanged(count: Int) {
+                        if (isResting || isPaused) return
+                        currentRepCount = count
+                        binding.pushUpCount.text = count.toString()
+                        updateTotalCount()
+                    }
+
+                    override fun onStatusChanged(statusRes: Int) {
+                        binding.statusText.text = getString(statusRes)
+                    }
+                })
+
+                ChinUpPoseAnalyzer(
+                    PoseDetection.getClient(
+                        PoseDetectorOptions.Builder()
+                            .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
+                            .build()
+                    ),
+                    repCounter
+                )
+            }
+        }
+
         // Init helpers
         toneGenerator = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
         vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -161,19 +208,6 @@ class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
             getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        // Detector
-        pushUpDetector = PushUpDetector(this, preferences = prefs)
-
-        // Face detector
-        val options = FaceDetectorOptions.Builder()
-            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
-            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
-            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
-            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_NONE)
-            .setMinFaceSize(0.1f)
-            .build()
-
-        faceDetector = FaceDetection.getClient(options)
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // initializing preferences
@@ -184,7 +218,7 @@ class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
         // Camera card
         binding.cameraCard.visibility = if (showCameraCardSwitch) View.VISIBLE else View.INVISIBLE
 
-        binding.resetButton.setOnClickListener { pushUpDetector.reset() }
+        binding.resetButton.setOnClickListener { exerciseFrameAnalyzer.reset() }
         binding.playPause.setOnClickListener { togglePause() }
         binding.done.setOnClickListener { onDoneClicked() }
         binding.exitRest.setOnClickListener { onExitRestClick() }
@@ -217,7 +251,8 @@ class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
             val imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .setResolutionSelector(resolutionSelector)
-                .build().also { it.setAnalyzer(cameraExecutor, FaceAnalyzer()) }
+                .build()
+                .also { it.setAnalyzer(cameraExecutor, ExerciseAnalyzer()) }
 
             try {
                 cameraProvider.unbindAll()
@@ -406,7 +441,7 @@ class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
         }
         // Reset per-rep counter for UI but keep totalPushUps
         currentRepCount = 0
-        pushUpDetector.reset()
+        exerciseFrameAnalyzer.reset()
         updateRepTitle()
         updateTotalCount()
     }
@@ -481,28 +516,13 @@ class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
         }
     }
 
-    private inner class FaceAnalyzer : ImageAnalysis.Analyzer {
-        @OptIn(ExperimentalGetImage::class)
+    private inner class ExerciseAnalyzer : ImageAnalysis.Analyzer {
         override fun analyze(imageProxy: ImageProxy) {
-            val mediaImage = imageProxy.image
-            if (mediaImage != null) {
-                val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-                faceDetector.process(image)
-                    .addOnSuccessListener { faces ->
-                        if (faces.isNotEmpty()) {
-                            val face = faces[0]
-                            val faceArea = max(0, face.boundingBox.width()) * max(
-                                0,
-                                face.boundingBox.height()
-                            )
-                            val imageArea = max(1, imageProxy.width) * max(1, imageProxy.height)
-                            pushUpDetector.process(faceArea, imageArea)
-                        } else {
-                            pushUpDetector.onNoFace()
-                        }
-                    }
-                    .addOnCompleteListener { imageProxy.close() }
-            } else imageProxy.close()
+            if (isPaused || isResting) {
+                imageProxy.close()
+                return
+            }
+            exerciseFrameAnalyzer.analyze(imageProxy)
         }
     }
 
@@ -541,7 +561,7 @@ class CounterActivity : AppCompatActivity(), PushUpDetector.Listener {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
-        faceDetector.close()
+        exerciseFrameAnalyzer.onDestroy()
         toneGenerator?.release()
         window.decorView.keepScreenOn = false
         uiHandler.removeCallbacksAndMessages(null)
