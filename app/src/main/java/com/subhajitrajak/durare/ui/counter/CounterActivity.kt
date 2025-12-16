@@ -45,6 +45,8 @@ import com.subhajitrajak.durare.data.models.DailyPushStats
 import com.subhajitrajak.durare.data.models.DailyWorkoutStats
 import com.subhajitrajak.durare.data.repositories.StatsRepository
 import com.subhajitrajak.durare.databinding.ActivityCounterBinding
+import com.subhajitrajak.durare.exercise.BaseRepCounter
+import com.subhajitrajak.durare.exercise.RepCounterListener
 import com.subhajitrajak.durare.ui.shareStats.ShareStatsActivity
 import com.subhajitrajak.durare.exercise.chinUp.ChinUpRepCounter
 import com.subhajitrajak.durare.utils.Constants.DATE_FORMAT
@@ -60,7 +62,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.math.max
 
-class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
+class CounterActivity : AppCompatActivity(), RepCounterListener {
 
     private val binding: ActivityCounterBinding by lazy {
         ActivityCounterBinding.inflate(layoutInflater)
@@ -84,6 +86,7 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
     private var isSoundFeedbackEnabled: Boolean = false
     private var isVibrationFeedbackEnabled: Boolean = false
     private lateinit var exerciseType: ExerciseType
+    private var repCounter: BaseRepCounter? = null
 
     // Session/rep state
     private var totalReps: Int = 3
@@ -127,10 +130,6 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
         }
     }
 
-    // Push duration tracking
-    private var lastPushTimestampMs: Long = 0L
-    private var cumulativePushDurationMs: Long = 0L
-
     // Repo
     private val statsRepository: StatsRepository by lazy { StatsRepository() }
 
@@ -163,7 +162,8 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
         exerciseFrameAnalyzer = when (exerciseType) {
 
             ExerciseType.PUSH_UP -> {
-                val repCounter = PushUpRepCounter(this, prefs)
+                val pushUpCounter = PushUpRepCounter(this, prefs)
+                repCounter = pushUpCounter
 
                 val faceOptions = FaceDetectorOptions.Builder()
                     .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
@@ -172,42 +172,13 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
 
                 PushUpFaceAnalyzer(
                     FaceDetection.getClient(faceOptions),
-                    repCounter
+                    pushUpCounter
                 )
             }
 
             ExerciseType.CHIN_UP -> {
-                val repCounter = ChinUpRepCounter(object : ChinUpRepCounter.Listener {
-                    override fun onCountChanged(count: Int) {
-                        if (isResting || isPaused) return
-
-                        // Only update duration if the rep count actually increased
-                        if (count > currentRepCount) {
-                            val now = System.currentTimeMillis()
-                            // If this isn't the first trigger, calculate duration since last rep
-                            if (lastPushTimestampMs != 0L) {
-                                cumulativePushDurationMs += (now - lastPushTimestampMs)
-                            }
-                            // Update timestamp for the next rep
-                            lastPushTimestampMs = now
-
-                            if (isSoundFeedbackEnabled) {
-                                try { toneGenerator?.startTone(ToneGenerator.TONE_PROP_ACK, 120) } catch (_: Exception) {}
-                            }
-                            if (isVibrationFeedbackEnabled) {
-                                try { vibrator?.vibrate(VibrationEffect.createOneShot(60, VibrationEffect.DEFAULT_AMPLITUDE)) } catch (_: Exception) {}
-                            }
-                        }
-
-                        currentRepCount = count
-                        binding.pushUpCount.text = count.toString()
-                        updateTotalCount()
-                    }
-
-                    override fun onStatusChanged(statusRes: Int) {
-                        binding.statusText.text = getString(statusRes)
-                    }
-                })
+                val chinUpCounter  = ChinUpRepCounter(this)
+                repCounter = chinUpCounter
 
                 ChinUpPoseAnalyzer(
                     PoseDetection.getClient(
@@ -215,7 +186,7 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
                             .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
                             .build()
                     ),
-                    repCounter
+                    chinUpCounter
                 )
             }
         }
@@ -484,7 +455,8 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
         // Persist stats
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         val date = SimpleDateFormat(DATE_FORMAT, Locale.US).format(Date())
-        val averageWorkoutDurationMs = if (totalPushUps > 0) cumulativePushDurationMs / totalPushUps else 0L
+        val totalDurationMs  = repCounter?.cumulativeDurationMs ?: 0L
+        val averageWorkoutDurationMs = if (totalPushUps > 0) totalDurationMs  / totalPushUps else 0L
 
         if (uid == null) {
             showToast(this, "Couldn't save stats, please login again.")
@@ -586,16 +558,8 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
         binding.statusText.text = getString(statusRes)
     }
 
-    override fun onFaceSizeChanged(percentage: Int) {
-        binding.faceSizeText.text = getString(R.string.face_size_format, percentage)
-    }
-
-    override fun onPushUpCompleted() {
+    override fun onRepCompleted() {
         if (isResting || isPaused) return
-        // Track average push duration
-        val now = System.currentTimeMillis()
-        if (lastPushTimestampMs != 0L) cumulativePushDurationMs += (now - lastPushTimestampMs)
-        lastPushTimestampMs = now
 
         if (isSoundFeedbackEnabled) {
             try { toneGenerator?.startTone(ToneGenerator.TONE_PROP_ACK, 120) } catch (_: Exception) {}
@@ -604,6 +568,10 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
         if (isVibrationFeedbackEnabled) {
             try { vibrator?.vibrate(VibrationEffect.createOneShot(60, VibrationEffect.DEFAULT_AMPLITUDE)) } catch (_: Exception) {}
         }
+    }
+
+    override fun onFaceSizeChanged(percentage: Int) {
+        binding.faceSizeText.text = getString(R.string.face_size_format, percentage)
     }
 
     override fun onDestroy() {

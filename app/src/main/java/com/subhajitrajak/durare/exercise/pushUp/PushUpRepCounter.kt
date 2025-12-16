@@ -1,23 +1,17 @@
 package com.subhajitrajak.durare.exercise.pushUp
 
 import com.subhajitrajak.durare.R
+import com.subhajitrajak.durare.exercise.BaseRepCounter
+import com.subhajitrajak.durare.exercise.RepCounterListener
 import com.subhajitrajak.durare.utils.Preferences
 import kotlin.math.max
 import kotlin.math.min
 
 class PushUpRepCounter(
-    private val listener: Listener,
+    listener: RepCounterListener,
     preferences: Preferences
-) {
+) : BaseRepCounter(listener) {
 
-    interface Listener {
-        fun onCountChanged(count: Int)
-        fun onStatusChanged(statusRes: Int)
-        fun onFaceSizeChanged(percentage: Int)
-        fun onPushUpCompleted()
-    }
-
-    private var currentCount = 0
     private var isInDownPosition = false
     private var smoothedFacePercentage = 0f
 
@@ -34,20 +28,20 @@ class PushUpRepCounter(
         private const val SMOOTHING_ALPHA = 0.25f
     }
 
-    fun reset() {
-        currentCount = 0
+    override fun reset() {
+        super.reset()
         isInDownPosition = false
         smoothedFacePercentage = 0f
         consecutiveDownFrames = 0
         consecutiveUpFrames = 0
         consecutiveNoFaceFrames = 0
-        listener.onCountChanged(currentCount)
-        listener.onStatusChanged(R.string.status_ready)
-        listener.onFaceSizeChanged(0)
     }
 
     fun process(faceArea: Int, imageArea: Int) {
         consecutiveNoFaceFrames = 0
+
+        // Start tracking time as soon as a face is detected
+        startDurationTracking()
 
         val rawPercentage = (faceArea.toFloat() / imageArea * 100f)
         smoothedFacePercentage =
@@ -70,11 +64,9 @@ class PushUpRepCounter(
                 consecutiveUpFrames++
                 consecutiveDownFrames = 0
                 if (consecutiveUpFrames >= FRAME_THRESHOLD && isInDownPosition) {
-                    currentCount++
                     isInDownPosition = false
-                    listener.onCountChanged(currentCount)
                     listener.onStatusChanged(R.string.status_great)
-                    listener.onPushUpCompleted()
+                    incrementRep() // Uses Base Class logic
                 } else if (consecutiveUpFrames >= FRAME_THRESHOLD) {
                     listener.onStatusChanged(R.string.status_ready_pushup)
                 }

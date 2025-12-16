@@ -3,19 +3,14 @@ package com.subhajitrajak.durare.exercise.chinUp
 import com.google.mlkit.vision.pose.Pose
 import com.google.mlkit.vision.pose.PoseLandmark
 import com.subhajitrajak.durare.R
+import com.subhajitrajak.durare.exercise.BaseRepCounter
+import com.subhajitrajak.durare.exercise.RepCounterListener
 
 class ChinUpRepCounter(
-    private val listener: Listener
-) {
+    listener: RepCounterListener
+) : BaseRepCounter(listener) {
 
-    interface Listener {
-        fun onCountChanged(count: Int)
-        fun onStatusChanged(statusRes: Int)
-    }
-
-    private var count = 0
     private var state = State.DOWN
-
     private var startTimeMs: Long? = null
     private var countingStarted = false
 
@@ -28,14 +23,13 @@ class ChinUpRepCounter(
 
     private enum class State { UP, DOWN }
 
-    fun reset() {
-        count = 0
+    override fun reset() {
+        super.reset()
         state = State.DOWN
         startTimeMs = null
         countingStarted = false
         barConfirmed = false
         smoothedBarY = null
-        listener.onCountChanged(count)
         listener.onStatusChanged(R.string.status_hold_position)
     }
 
@@ -64,7 +58,7 @@ class ChinUpRepCounter(
 
         val barY = smoothedBarY!!
 
-        // WAIT PHASE
+        // WAIT / CALIBRATION PHASE
         if (!countingStarted) {
             val now = System.currentTimeMillis()
             if (startTimeMs == null) startTimeMs = now
@@ -78,6 +72,7 @@ class ChinUpRepCounter(
                 countingStarted = true
                 state = State.DOWN
                 listener.onStatusChanged(R.string.status_ready1)
+                startDurationTracking() // Start timer now that we are calibrated
             } else {
                 listener.onStatusChanged(R.string.status_hold_position)
             }
@@ -93,10 +88,9 @@ class ChinUpRepCounter(
 
         // DOWN: chin clearly below bar AFTER being UP
         else if (barConfirmed && noseY > barY + offsetPx && state == State.UP) {
-            count++
             state = State.DOWN
-            listener.onCountChanged(count)
             listener.onStatusChanged(R.string.status_great1)
+            incrementRep() // Uses Base Class logic (and tracks duration!)
         }
     }
 }
