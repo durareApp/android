@@ -3,6 +3,7 @@ package com.subhajitrajak.durare.utils
 object Constants {
     // firestore
     const val DAILY_PUSHUP_STATS = "dailyPushStats"
+    const val DAILY_CHIN_UP_STATS = "dailyChinUpStats"
     const val USERS = "users"
     const val USER_DATA = "userData"
     const val PROFILE = "profile"
@@ -17,4 +18,5 @@ object Constants {
     const val USER_WEIGHT = "userWeight"
     const val IS_ANONYMOUS = "isAnonymous"
     const val LIFETIME_TOTAL_PUSHUPS = "lifetimeTotalPushups"
+    const val LIFETIME_TOTAL_CHIN_UPS = "lifetimeTotalChinUps"
 }

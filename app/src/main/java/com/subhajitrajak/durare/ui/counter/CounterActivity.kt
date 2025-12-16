@@ -42,6 +42,7 @@ import com.subhajitrajak.durare.exercise.ExerciseFrameAnalyzer
 import com.subhajitrajak.durare.exercise.ExerciseType
 import com.subhajitrajak.durare.exercise.pushUp.PushUpFaceAnalyzer
 import com.subhajitrajak.durare.data.models.DailyPushStats
+import com.subhajitrajak.durare.data.models.DailyWorkoutStats
 import com.subhajitrajak.durare.data.repositories.StatsRepository
 import com.subhajitrajak.durare.databinding.ActivityCounterBinding
 import com.subhajitrajak.durare.ui.shareStats.ShareStatsActivity
@@ -82,6 +83,7 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
     private var showCameraCardSwitch: Boolean = false
     private var isSoundFeedbackEnabled: Boolean = false
     private var isVibrationFeedbackEnabled: Boolean = false
+    private lateinit var exerciseType: ExerciseType
 
     // Session/rep state
     private var totalReps: Int = 3
@@ -154,7 +156,7 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
             finish()
         }
 
-        val exerciseType = ExerciseType.valueOf(
+        exerciseType = ExerciseType.valueOf(
             intent.getStringExtra("exercise_type") ?: ExerciseType.PUSH_UP.name
         )
 
@@ -178,6 +180,25 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
                 val repCounter = ChinUpRepCounter(object : ChinUpRepCounter.Listener {
                     override fun onCountChanged(count: Int) {
                         if (isResting || isPaused) return
+
+                        // Only update duration if the rep count actually increased
+                        if (count > currentRepCount) {
+                            val now = System.currentTimeMillis()
+                            // If this isn't the first trigger, calculate duration since last rep
+                            if (lastPushTimestampMs != 0L) {
+                                cumulativePushDurationMs += (now - lastPushTimestampMs)
+                            }
+                            // Update timestamp for the next rep
+                            lastPushTimestampMs = now
+
+                            if (isSoundFeedbackEnabled) {
+                                try { toneGenerator?.startTone(ToneGenerator.TONE_PROP_ACK, 120) } catch (_: Exception) {}
+                            }
+                            if (isVibrationFeedbackEnabled) {
+                                try { vibrator?.vibrate(VibrationEffect.createOneShot(60, VibrationEffect.DEFAULT_AMPLITUDE)) } catch (_: Exception) {}
+                            }
+                        }
+
                         currentRepCount = count
                         binding.pushUpCount.text = count.toString()
                         updateTotalCount()
@@ -462,30 +483,57 @@ class CounterActivity : AppCompatActivity(), PushUpRepCounter.Listener {
     private fun completeSessionAndExit() {
         // Persist stats
         val uid = FirebaseAuth.getInstance().currentUser?.uid
-        val dateKey = SimpleDateFormat(DATE_FORMAT, Locale.US).format(Date())
-        val avgPushDuration = if (totalPushUps > 0) cumulativePushDurationMs / totalPushUps else 0L
-        val stats = DailyPushStats(
-            date = dateKey,
-            totalReps = totalReps,
-            totalPushups = totalPushUps,
-            totalActiveTimeMs = activeAccumulatedMs,
-            averagePushDurationMs = avgPushDuration,
-            totalRestTimeMs = restAccumulatedMs
-        )
+        val date = SimpleDateFormat(DATE_FORMAT, Locale.US).format(Date())
+        val averageWorkoutDurationMs = if (totalPushUps > 0) cumulativePushDurationMs / totalPushUps else 0L
+
         if (uid == null) {
             showToast(this, "Couldn't save stats, please login again.")
             finish()
             return
         }
-        statsRepository.saveOrAccumulateDaily(uid, dateKey, stats)
-            .addOnSuccessListener {
-                navigateToShareStats(stats)
+
+        when (exerciseType) {
+            ExerciseType.PUSH_UP -> {
+                val stats = DailyPushStats(
+                    date = date,
+                    totalReps = totalReps,
+                    totalPushups = totalPushUps,
+                    totalActiveTimeMs = activeAccumulatedMs,
+                    averagePushDurationMs = averageWorkoutDurationMs,
+                    totalRestTimeMs = restAccumulatedMs
+                )
+
+                statsRepository.saveOrAccumulateDaily(uid, date, stats)
+                    .addOnSuccessListener {
+                        navigateToShareStats(stats)
+                    }
+                    .addOnFailureListener { err ->
+                        log("Failed to save stats - ${err.message}")
+                        showToast(this, "Failed to save stats")
+                        finish()
+                    }
             }
-            .addOnFailureListener { err ->
-                log("Failed to save stats - ${err.message}")
-                showToast(this, "Failed to save stats")
-                finish()
+            ExerciseType.CHIN_UP -> {
+                val stats = DailyWorkoutStats(
+                    date = date,
+                    sets = totalReps,
+                    reps = totalPushUps,
+                    activeTimeMs = activeAccumulatedMs,
+                    averageRepDurationMs = averageWorkoutDurationMs,
+                    restTimeMs = restAccumulatedMs
+                )
+
+                statsRepository.saveDailyChinUpStats(uid, date, stats)
+                    .addOnSuccessListener {
+                        finish()
+                    }
+                    .addOnFailureListener { err ->
+                        log("Failed to save stats - ${err.message}")
+                        showToast(this, "Failed to save stats")
+                        finish()
+                    }
             }
+        }
     }
 
     private fun navigateToShareStats(stats: DailyPushStats) {

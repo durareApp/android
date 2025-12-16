@@ -4,6 +4,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.subhajitrajak.durare.data.models.DailyPushStats
+import com.subhajitrajak.durare.data.models.DailyWorkoutStats
 import com.subhajitrajak.durare.utils.Constants
 
 class StatsRepository {
@@ -43,6 +44,46 @@ class StatsRepository {
                 txn.update(userDoc, Constants.LIFETIME_TOTAL_PUSHUPS, FieldValue.increment(pushupIncrement.toLong()))
             } else {
                 txn.set(userDoc, mapOf(Constants.LIFETIME_TOTAL_PUSHUPS to pushupIncrement))
+            }
+
+            null
+        }
+    }
+
+    fun saveDailyChinUpStats(uid: String, date: String, stats: DailyWorkoutStats): Task<Void> {
+        val userDoc = db.collection(Constants.USERS).document(uid)
+        val docRef = userDoc.collection(Constants.DAILY_CHIN_UP_STATS).document(date)
+
+        return db.runTransaction { txn ->
+            // Read everything first
+            val dailySnap = txn.get(docRef)
+            val userSnap = txn.get(userDoc)
+            var repIncrement: Int
+
+            // Handle daily stats
+            if (dailySnap.exists()) {
+                val existing = dailySnap.toObject(DailyWorkoutStats::class.java)
+                val merged = existing?.copy(
+                    sets = existing.sets + stats.sets,
+                    reps = existing.reps + stats.reps,
+                    activeTimeMs = existing.activeTimeMs + stats.activeTimeMs,
+                    averageRepDurationMs = if (existing.reps + stats.reps > 0)
+                        ((existing.averageRepDurationMs * existing.reps) + (stats.averageRepDurationMs * stats.reps)) / (existing.reps + stats.reps)
+                    else 0L,
+                    restTimeMs = existing.restTimeMs + stats.restTimeMs
+                ) ?: stats
+                txn.set(docRef, merged)
+                repIncrement = merged.reps - existing!!.reps
+            } else {
+                txn.set(docRef, stats)
+                repIncrement = stats.reps
+            }
+
+            // Handle lifetime stats
+            if (userSnap.exists()) {
+                txn.update(userDoc, Constants.LIFETIME_TOTAL_CHIN_UPS, FieldValue.increment(repIncrement.toLong()))
+            } else {
+                txn.set(userDoc, mapOf(Constants.LIFETIME_TOTAL_CHIN_UPS to repIncrement))
             }
 
             null
