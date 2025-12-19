@@ -105,7 +105,7 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.play.services.auth)
     // firestore
-    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.firestore)
     // listenable future support
     implementation(libs.androidx.concurrent.futures)
     implementation(libs.guava.listenablefuture)

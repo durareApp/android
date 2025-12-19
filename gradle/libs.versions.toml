@@ -2,16 +2,12 @@
 agp = "8.11.1"
 androidchart = "3.1.0.31"
 appUpdate = "2.1.0"
-cameraCore = "1.4.2"
-cameraCamera2 = "1.4.2"
-cameraLifecycle = "1.4.2"
-cameraView = "1.4.2"
+camera = "1.5.2"
 circleimageview = "3.1.0"
 coreSplashscreen = "1.0.1"
 dotsindicator = "5.1.0"
 faceDetection = "16.1.7"
-firebaseAi = "17.4.0"
-firebaseBom = "34.6.0"
+firebase = "34.7.0"
 flexbox = "3.0.0"
 glide = "5.0.4"
 integrity = "1.6.0"
@@ -28,12 +24,10 @@ activity = "1.10.1"
 constraintlayout = "2.2.1"
 navigationFragment = "2.9.3"
 googleGmsGoogleServices = "4.4.3"
-firebaseAuth = "24.0.1"
 credentials = "1.5.0"
 credentialsPlayServicesAuth = "1.5.0"
 googleid = "1.1.1"
 playServicesAuth = "21.4.0"
-firebaseFirestore = "25.1.4"
 concurrentFutures = "1.2.0"
 guavaListenableFuture = "1.0"
 guavaAndroid = "33.2.1-android"
@@ -45,10 +39,10 @@ poseDetection = "18.0.0-beta5"
 
 [libraries]
 androidchart = { module = "com.github.AppDevNext:AndroidChart", version.ref = "androidchart" }
-androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraView" }
-androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
-androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
-androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camera" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camera" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camera" }
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "camera" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -61,10 +55,6 @@ dotsindicator = { module = "com.tbuonomo:dotsindicator", version.ref = "dotsindi
 face-detection = { module = "com.google.mlkit:face-detection", version.ref = "faceDetection" }
 pose-detection = { group = "com.google.mlkit", name = "pose-detection", version.ref = "poseDetection" }
 pose-detection-common = { group = "com.google.mlkit", name = "pose-detection-common", version.ref = "poseDetection" }
-firebase-ai = { module = "com.google.firebase:firebase-ai", version.ref = "firebaseAi" }
-firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
-firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 integrity = { module = "com.google.android.play:integrity", version.ref = "integrity" }
@@ -85,18 +75,21 @@ androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefre
 vico-views = { group = "com.patrykandpatrick.vico", name = "views", version.ref = "vico" }
 noties-markwon-core = { module = "io.noties.markwon:core", version.ref = "markwon" }
 
-#firebase auth
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+#firebase
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+firebase-ai = { module = "com.google.firebase:firebase-ai" }
+firebase-appcheck-debug = { module = "com.google.firebase:firebase-appcheck-debug" }
+firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appcheck-playintegrity" }
+
+#auth
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentialsPlayServicesAuth" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 
-#firestore
-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestore" }
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
-
