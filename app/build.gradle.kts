@@ -143,4 +143,7 @@ dependencies {
     implementation(libs.integrity)
     implementation(libs.firebase.appcheck.playintegrity)
     implementation(libs.firebase.appcheck.debug)
+
+    // in-app updates
+    implementation (libs.app.update)
 }

@@ -13,6 +13,9 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -21,6 +24,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.subhajitrajak.durare.exercise.ExerciseType
 import com.subhajitrajak.durare.databinding.ActivityHomeBinding
 import com.subhajitrajak.durare.databinding.DialogPermissionBinding
@@ -29,6 +40,7 @@ import com.subhajitrajak.durare.ui.counter.CounterActivity.Companion.REQUIRED_PE
 import com.subhajitrajak.durare.ui.dashboard.WorkoutSetupDialog
 import com.subhajitrajak.durare.utils.Preferences
 import com.subhajitrajak.durare.utils.ThemeSwitcher
+import com.subhajitrajak.durare.utils.log
 import com.subhajitrajak.durare.utils.remove
 import com.subhajitrajak.durare.utils.show
 
@@ -58,6 +70,18 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var connectivityManager: ConnectivityManager
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
 
+    private lateinit var appUpdateManager: AppUpdateManager
+    private lateinit var activityResultLauncher: ActivityResultLauncher<IntentSenderRequest>
+
+    // Listener to track the state of the update installation process
+    private val listener = InstallStateUpdatedListener { state ->
+        // Checks if the update has been downloaded
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            // Shows a Snackbar prompting the user to restart the app to complete the update
+            popupSnackbarForCompleteUpdate()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
@@ -65,6 +89,7 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupNetworkCheck()
+        checkForInAppUpdates()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -79,12 +104,14 @@ class HomeActivity : AppCompatActivity() {
 
         ThemeSwitcher.animateActivity(this)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            val areNavigationScreens = (destination.id == R.id.dashboardFragment) || (destination.id == R.id.leaderboardFragment) || (destination.id == R.id.analyticsFragment)
+            val areNavigationScreens =
+                (destination.id == R.id.dashboardFragment) || (destination.id == R.id.leaderboardFragment) || (destination.id == R.id.analyticsFragment)
             binding.bottomNav.visibility = if (areNavigationScreens) View.VISIBLE else View.GONE
             binding.view.visibility = if (areNavigationScreens) View.VISIBLE else View.GONE
             binding.startButton.visibility = if (areNavigationScreens) View.VISIBLE else View.GONE
@@ -241,6 +268,69 @@ class HomeActivity : AppCompatActivity() {
         val caps = cm.getNetworkCapabilities(network) ?: return false
         return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
                 caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    }
+
+    // checking for in-app updates
+    private fun checkForInAppUpdates() {
+        // Creates an instance of the AppUpdateManager
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+
+        // Registers an activity result launcher to handle the update process result
+        activityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result: ActivityResult ->
+                if (result.resultCode != RESULT_OK) {
+                    // If the update fails, log the failure
+                    log("Update flow failed! Result code: ${result.resultCode}")
+                }
+            }
+
+        // Registers a listener to monitor the update installation process
+        appUpdateManager.registerListener(listener)
+
+        // Fetches the update information
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            // Checks if an update is available and allowed for flexible updates
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)
+            ) {
+                // Requests an in-app update
+                appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    activityResultLauncher,
+                    AppUpdateOptions.newBuilder(AppUpdateType.FLEXIBLE).build()
+                )
+            }
+        }
+    }
+
+    // Displays a Snackbar to notify the user that the update is ready to install
+    private fun popupSnackbarForCompleteUpdate() {
+        Snackbar.make(
+            binding.root,
+            "Update ready to install",
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction("Restart") { appUpdateManager.completeUpdate() }
+            show()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Checks if an update was downloaded while the app was inactive and prompts the user
+        appUpdateManager.appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                    popupSnackbarForCompleteUpdate()
+                }
+            }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Unregisters the update listener when the app goes into the background
+        appUpdateManager.unregisterListener(listener)
     }
 
     override fun onDestroy() {
