@@ -1,13 +1,18 @@
 package com.subhajitrajak.durare
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -16,6 +21,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.subhajitrajak.durare.exercise.ExerciseType
 import com.subhajitrajak.durare.databinding.ActivityHomeBinding
+import com.subhajitrajak.durare.databinding.DialogPermissionBinding
 import com.subhajitrajak.durare.ui.counter.CounterActivity
 import com.subhajitrajak.durare.ui.dashboard.WorkoutSetupDialog
 import com.subhajitrajak.durare.utils.Preferences
@@ -28,6 +34,19 @@ class HomeActivity : AppCompatActivity() {
     private val binding: ActivityHomeBinding by lazy {
         ActivityHomeBinding.inflate(layoutInflater)
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                showWorkoutSetupDialog()
+            } else {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    showPermissionRationale()
+                } else {
+                    showGoToSettingsDialog()
+                }
+            }
+        }
 
     private var isOffline = false
     private var lastDestinationIsNavScreen = false
@@ -74,7 +93,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.startButton.setOnClickListener {
-            showWorkoutSetupDialog()
+            showPermissionRationale()
         }
 
         binding.offlineBanner.setOnClickListener {
@@ -146,6 +165,66 @@ class HomeActivity : AppCompatActivity() {
                 binding.offlineBanner.remove()
             }
         }
+    }
+
+    private fun showPermissionRationale() {
+        showCustomDialog(
+            title = getString(R.string.camera_permission_needed),
+            message = getString(R.string.this_app_requires_camera_access_to_function_properly),
+            positiveText = getString(R.string.ok),
+            onPositiveClick = {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        )
+    }
+
+    private fun showGoToSettingsDialog() {
+        showCustomDialog(
+            title = getString(R.string.permission_required),
+            message = getString(R.string.camera_permission_has_been_permanently_denied_please_enable_it_in_app_settings),
+            positiveText = getString(R.string.go_to_settings),
+            onPositiveClick = {
+                val intent = Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.fromParts("package", packageName, null)
+                )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+        )
+    }
+
+    private fun showCustomDialog(
+        title: String,
+        message: String,
+        positiveText: String,
+        negativeText: String = getString(R.string.cancel),
+        onPositiveClick: () -> Unit,
+        onNegativeClick: () -> Unit = {}
+    ) {
+        val dialogBinding = DialogPermissionBinding.inflate(layoutInflater)
+
+        dialogBinding.dialogTitle.text = title
+        dialogBinding.dialogMessage.text = message
+        dialogBinding.dialogOk.text = positiveText
+        dialogBinding.dialogCancel.text = negativeText
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root)
+            .create()
+
+        dialogBinding.dialogCancel.setOnClickListener {
+            dialog.dismiss()
+            onNegativeClick()
+        }
+
+        dialogBinding.dialogOk.setOnClickListener {
+            dialog.dismiss()
+            onPositiveClick()
+        }
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
     }
 
     private fun isInternetAvailable(): Boolean {
