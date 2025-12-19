@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:cardBackgroundColor="@color/very_light_grey"
             app:cardCornerRadius="16dp"
             app:cardElevation="0dp">
@@ -104,7 +104,6 @@
                         android:fontFamily="@font/special_gothic_expanded_regular"
                         android:gravity="center"
                         android:paddingHorizontal="16dp"
-                        android:text="@string/hyphen"
                         android:textColor="@color/very_dark_grey"
                         android:textSize="24sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -120,9 +119,9 @@
             android:id="@+id/top3Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginHorizontal="32dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:visibility="invisible">
 
             <LinearLayout
                 android:id="@+id/secondInfo"
@@ -141,7 +140,6 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginBottom="8dp"
-                    android:src="@drawable/story_placeholder"
                     app:civ_border_color="@color/black"
                     app:civ_border_width="2dp" />
 
@@ -153,7 +151,6 @@
                     android:fontFamily="@font/special_gothic_semiexpanded_regular"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="@string/person_name_2"
                     android:textColor="@color/black"
                     android:textSize="11sp" />
 
@@ -164,7 +161,6 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special_gothic_semiexpanded_regular"
                     android:gravity="center"
-                    android:text="@string/score_2"
                     android:textColor="@color/black"
                     android:textSize="11sp" />
 
@@ -185,17 +181,16 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:importantForAccessibility="no"
-                    android:src="@drawable/crown"
                     android:layout_marginBottom="-8dp"
-                    android:elevation="1dp"/>
+                    android:elevation="1dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/crown" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/firstPersonImage"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginBottom="8dp"
-                    android:src="@drawable/story_placeholder"
                     app:civ_border_color="@color/black"
                     app:civ_border_width="2dp" />
 
@@ -207,7 +202,6 @@
                     android:fontFamily="@font/special_gothic_semiexpanded_regular"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="@string/person_name_1"
                     android:textColor="@color/black"
                     android:textSize="11sp" />
 
@@ -218,7 +212,6 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special_gothic_semiexpanded_regular"
                     android:gravity="center"
-                    android:text="@string/score_1"
                     android:textColor="@color/black"
                     android:textSize="11sp" />
 
@@ -241,7 +234,6 @@
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:layout_marginBottom="8dp"
-                    android:src="@drawable/story_placeholder"
                     app:civ_border_color="@color/black"
                     app:civ_border_width="2dp" />
 
@@ -253,7 +245,6 @@
                     android:fontFamily="@font/special_gothic_semiexpanded_regular"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="@string/person_name_3"
                     android:textColor="@color/black"
                     android:textSize="11sp" />
 
@@ -264,7 +255,6 @@
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/special_gothic_semiexpanded_regular"
                     android:gravity="center"
-                    android:text="@string/score_3"
                     android:textColor="@color/black"
                     android:textSize="11sp" />
 
