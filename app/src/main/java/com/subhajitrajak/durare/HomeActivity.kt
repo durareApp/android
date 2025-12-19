@@ -3,6 +3,7 @@ package com.subhajitrajak.durare
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -14,6 +15,7 @@ import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -23,6 +25,7 @@ import com.subhajitrajak.durare.exercise.ExerciseType
 import com.subhajitrajak.durare.databinding.ActivityHomeBinding
 import com.subhajitrajak.durare.databinding.DialogPermissionBinding
 import com.subhajitrajak.durare.ui.counter.CounterActivity
+import com.subhajitrajak.durare.ui.counter.CounterActivity.Companion.REQUIRED_PERMISSIONS
 import com.subhajitrajak.durare.ui.dashboard.WorkoutSetupDialog
 import com.subhajitrajak.durare.utils.Preferences
 import com.subhajitrajak.durare.utils.ThemeSwitcher
@@ -93,7 +96,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         binding.startButton.setOnClickListener {
-            showPermissionRationale()
+            if (allPermissionsGranted()) showWorkoutSetupDialog()
+            else showPermissionRationale()
         }
 
         binding.offlineBanner.setOnClickListener {
@@ -165,6 +169,10 @@ class HomeActivity : AppCompatActivity() {
                 binding.offlineBanner.remove()
             }
         }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun showPermissionRationale() {

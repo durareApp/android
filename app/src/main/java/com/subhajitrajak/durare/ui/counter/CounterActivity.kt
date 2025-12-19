@@ -79,7 +79,7 @@ class CounterActivity : AppCompatActivity(), RepCounterListener {
 
     companion object {
         private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
     private var showCameraCardSwitch: Boolean = false
