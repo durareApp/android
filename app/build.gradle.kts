@@ -22,8 +22,8 @@ android {
         applicationId = "com.subhajitrajak.durare"
         minSdk = 26
         targetSdk = 36
-        versionCode = 19
-        versionName = "0.6.0"
+        versionCode = 20
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
