@@ -10,8 +10,8 @@
   <h4>An Android application that uses face detection to count push-ups in real-time. The app detects your face position through the front camera and counts push-ups based on how close your face is to the camera.</h4>
   
   <p>
-     <img alt="Static Badge" src="https://img.shields.io/badge/0.6.0-0?style=for-the-badge&logo=android&label=Version&labelColor=%2310140e&color=%233A761D">
-     <img alt="Static Badge" src="https://img.shields.io/badge/0.6.0-0?style=for-the-badge&logo=github&label=Version&labelColor=%2310140e&color=%233A761D">
+     <img alt="Static Badge" src="https://img.shields.io/badge/1.0.0-0?style=for-the-badge&logo=android&label=Version&labelColor=%2310140e&color=%233A761D">
+     <img alt="Static Badge" src="https://img.shields.io/badge/1.0.0-0?style=for-the-badge&logo=github&label=Version&labelColor=%2310140e&color=%233A761D">
   </p>
   
   <img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android3.svg">
