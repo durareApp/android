@@ -8,10 +8,20 @@
    </h1>
 
   <h4>An Android application that uses face detection to count push-ups in real-time. The app detects your face position through the front camera and counts push-ups based on how close your face is to the camera.</h4>
+
+  <a href="https://www.producthunt.com/products/durare-ai-push-up-counter?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-durare-ai-push-up-counter" 
+     target="_blank" rel="noopener noreferrer">
+     <img 
+        alt="Durare - Ai Push Up Counter - AI-powered push-up counter &amp; fitness tracker | Product Hunt" 
+        width="250" 
+        height="54" 
+        src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1052541&amp;theme=light&amp;t=1767027018675"
+      >
+  </a>
   
   <p>
-     <img alt="Static Badge" src="https://img.shields.io/badge/0.6.0-0?style=for-the-badge&logo=android&label=Version&labelColor=%2310140e&color=%233A761D">
-     <img alt="Static Badge" src="https://img.shields.io/badge/0.6.0-0?style=for-the-badge&logo=github&label=Version&labelColor=%2310140e&color=%233A761D">
+     <img alt="Static Badge" src="https://img.shields.io/badge/1.0.0-0?style=for-the-badge&logo=android&label=Version&labelColor=%2310140e&color=%233A761D">
+     <img alt="Static Badge" src="https://img.shields.io/badge/1.0.0-0?style=for-the-badge&logo=github&label=Version&labelColor=%2310140e&color=%233A761D">
   </p>
   
   <img src="https://ziadoua.github.io/m3-Markdown-Badges/badges/Android/android3.svg">
