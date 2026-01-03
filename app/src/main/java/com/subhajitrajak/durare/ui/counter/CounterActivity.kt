@@ -318,7 +318,9 @@ class CounterActivity : AppCompatActivity(), RepCounterListener {
         isResting = true
         restRemainingMs = customRestMs
         // Prepare for next rep: freeze counting during rest
-        binding.statusText.text = getString(R.string.resting)
+        binding.pushUpCount.visibility = View.GONE
+        binding.statusText.visibility = View.GONE
+        binding.cameraCard.visibility = View.GONE
         binding.repCount.text = getString(R.string.rest_time)
         binding.resetButton.visibility = View.GONE
         binding.done.visibility = View.GONE
@@ -421,6 +423,9 @@ class CounterActivity : AppCompatActivity(), RepCounterListener {
             try { vibrator?.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE)) } catch (_: Exception) {}
         }
 
+        binding.pushUpCount.visibility = View.VISIBLE
+        binding.statusText.visibility = View.VISIBLE
+        binding.cameraCard.visibility = View.VISIBLE
         binding.resetButton.visibility = View.VISIBLE
         binding.done.visibility = View.VISIBLE
         binding.exitRest.visibility = View.GONE
