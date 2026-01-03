@@ -42,6 +42,7 @@ class DashboardFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var borderAnimator: ValueAnimator? = null
+    private var animator: ValueAnimator? = null
 
     private val viewModel: DashboardViewModel by viewModels {
         DashboardViewModelFactory(requireContext().applicationContext)
@@ -187,8 +188,12 @@ class DashboardFragment : Fragment() {
             goalCard.setOnClickListener {
                 showGoalDialog(
                     onPositiveClick = { goal ->
-                        pref.setGoal(goal)
-                        goalTextView.text = goal.toString()
+                        animator?.isRunning?.let { running ->
+                            if (!running) {
+                                pref.setGoal(goal)
+                                goalTextView.text = goal.toString()
+                            }
+                        }
                     }
                 )
             }
@@ -226,18 +231,18 @@ class DashboardFragment : Fragment() {
         val originalStep = slider.stepSize
         slider.stepSize = 0f
 
-        val animator = ValueAnimator.ofFloat(slider.value, targetValue)
-        animator.duration = 1000
-        animator.addUpdateListener { anim ->
+        animator = ValueAnimator.ofFloat(slider.value, targetValue)
+        animator?.duration = 600
+        animator?.addUpdateListener { anim ->
             slider.value = (anim.animatedValue as Float)
         }
 
-        animator.doOnEnd {
+        animator?.doOnEnd {
             slider.stepSize = originalStep
             slider.value = targetValue
         }
 
-        animator.start()
+        animator?.start()
     }
 
     private fun setAnimation() {
@@ -363,6 +368,8 @@ class DashboardFragment : Fragment() {
         super.onDestroyView()
         borderAnimator?.cancel()
         borderAnimator = null
+        animator?.cancel()
+        animator = null
         _binding = null
     }
 
