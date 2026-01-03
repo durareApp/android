@@ -40,7 +40,7 @@
     <string name="timer">Timer</string>
     <string name="timer_sample_duration">00:00</string>
     <string name="_0">0</string>
-    <string name="rep_1">Rep 1</string>
+    <string name="rep_1">Set 1</string>
     <string name="face_0">Face: 0%</string>
     <string name="back">Back</string>
     <string name="rate_us">Rate us</string>
@@ -109,17 +109,17 @@
 
     <!-- Workout Setup Dialog -->
     <string name="setup_workout">Setup Workout</string>
-    <string name="total_reps">Total Reps</string>
-    <string name="enter_total_reps">Enter total reps</string>
+    <string name="total_reps">Total Sets</string>
+    <string name="enter_total_reps">Enter total sets</string>
     <string name="rest_time">Rest Time</string>
     <string name="minutes">Minutes</string>
     <string name="seconds">Seconds</string>
     <string name="cancel">Cancel</string>
     <string name="start_workout">Start Workout</string>
-    <string name="please_enter_total_reps">Please enter total reps</string>
-    <string name="please_enter_valid_reps">Please enter a valid number of reps</string>
-    <string name="tap_on_the_number_on_the_right_to_set_the_default_number_of_reps_count">Tap on the number on the right to set the default number of reps count</string>
-    <string name="tap_on_the_number_on_the_right_to_set_the_default_rest_time_after_each_rep">Tap on the number on the right to set the default rest time after each rep</string>
+    <string name="please_enter_total_reps">Please enter total sets</string>
+    <string name="please_enter_valid_reps">Please enter a valid number of sets</string>
+    <string name="tap_on_the_number_on_the_right_to_set_the_default_number_of_reps_count">Tap on the number on the right to set the default number of sets count</string>
+    <string name="tap_on_the_number_on_the_right_to_set_the_default_rest_time_after_each_rep">Tap on the number on the right to set the default rest time after each set</string>
     <string name="apply">Apply</string>
     <string name="separator">:</string>
     <string name="dismiss_dialog_box">Dismiss dialog box</string>
