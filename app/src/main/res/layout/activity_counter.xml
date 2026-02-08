@@ -14,7 +14,8 @@
         android:layout_height="24dp"
         android:layout_marginStart="24dp"
         android:contentDescription="@string/back"
-        android:src="@drawable/arrow_left"
+        android:src="@drawable/arrow_right"
+        android:rotation="180"
         app:layout_constraintBottom_toBottomOf="@+id/tutorial"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tutorial"
@@ -39,7 +40,7 @@
             android:layout_marginVertical="8dp"
             android:fontFamily="@font/special_gothic_semiexpanded_regular"
             android:text="Need Help?"
-            android:textColor="@color/dark_grey"
+            android:textColor="@color/grey"
             android:textSize="14sp" />
 
     </androidx.cardview.widget.CardView>
