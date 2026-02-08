@@ -424,7 +424,7 @@ class CounterActivity : AppCompatActivity(), RepCounterListener {
         }
 
         binding.pushUpCount.visibility = View.VISIBLE
-        binding.statusText.visibility = View.VISIBLE
+//        binding.statusText.visibility = View.VISIBLE
         binding.cameraCard.visibility = View.VISIBLE
         binding.resetButton.visibility = View.VISIBLE
         binding.done.visibility = View.VISIBLE
