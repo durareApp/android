@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -108,12 +109,55 @@ class HomeActivity : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        binding.bottomNav.setupWithNavController(navController)
-        navOptions {
-            launchSingleTop = true
-            restoreState = true
-            popUpTo(navController.graph.startDestinationId) {
-                saveState = true
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val currentDest = navController.currentDestination?.id
+
+                // root screens where the app should exit
+                val isRootScreen = currentDest == R.id.dashboardFragment ||
+                        currentDest == R.id.analyticsFragment ||
+                        currentDest == R.id.leaderboardFragment
+
+                if (isRootScreen) {
+                    // If we are on a root screen, close the activity (exit app)
+                    finish()
+                } else {
+                    // If we are in a sub-screen (like Settings), go back normally
+                    if (!navController.popBackStack()) {
+                        // If the nav controller can't pop anymore, finish the activity
+                        finish()
+                    }
+                }
+            }
+        })
+
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            val builder = navOptions {
+                // Pop up to the horizontal start of the graph to avoid stacking fragments
+                popUpTo(navController.graph.startDestinationId) {
+                    saveState = true
+                }
+                // Avoid multiple copies of the same destination when re-selecting
+                launchSingleTop = true
+                // Restore state when re-selecting a previously selected item
+                restoreState = true
+            }
+
+            when (item.itemId) {
+                R.id.dashboardFragment -> {
+                    navController.navigate(R.id.dashboardFragment, null, builder)
+                    true
+                }
+                R.id.analyticsFragment -> {
+                    navController.navigate(R.id.analyticsFragment, null, builder)
+                    true
+                }
+                R.id.leaderboardFragment -> {
+                    navController.navigate(R.id.leaderboardFragment, null, builder)
+                    true
+                }
+                else -> false
             }
         }
 
