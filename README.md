@@ -1,6 +1,6 @@
 <div align="center">
    
-   <img alt="Feature graphic" src="https://github.com/user-attachments/assets/824e2c6c-aa5f-476d-9f7d-9a5bc60103f9" />
+   <img alt="Feature graphic" src="https://github.com/user-attachments/assets/824e2c6c-aa5f-476d-9f7d-9a5bc60103f9" width="80%%"/>
 
    <h1>
      <img src="https://github.com/user-attachments/assets/13284f01-93cf-4524-a9f1-76cc79afab3e" alt="App Icon" width="30" style="vertical-align:middle; margin-right:10px;">
@@ -114,26 +114,25 @@ This project is open source and available under the GPL-3.0 license.
 
 ## Screenshots
 
-<p align="center">
-   <img alt="a" src="https://github.com/user-attachments/assets/668e631c-9e3e-4199-a060-df93df8706fb" width="24%%"/>
-   <img alt="b" src="https://github.com/user-attachments/assets/cafea59d-132c-4a89-892d-0c09b78eb17a" width="24%%"/>
-   <img alt="c" src="https://github.com/user-attachments/assets/d463e523-75e7-459f-8ae6-ab42d7e19427" width="24%%"/>
-   <img alt="d" src="https://github.com/user-attachments/assets/bb8a83a8-dee9-4c3c-8ab9-093b8fbddf1b" width="24%%"/>
+<p align="left">
+   <img alt="a" src="https://github.com/user-attachments/assets/dbcc19cd-4760-4ed9-b58b-77ce3b657bff" width="20%%"/>
+   <img alt="b" src="https://github.com/user-attachments/assets/f778aadc-c7db-42bd-be26-eb5d93bedc5d" width="20%%"/>
+   <img alt="c" src="https://github.com/user-attachments/assets/0b27b9e6-3290-44b1-a71b-336d014318bf" width="20%%"/>
+   <img alt="d" src="https://github.com/user-attachments/assets/9a7f0bf1-63cf-460b-aba2-91356654a9f3" width="20%%"/>
 </p>
 
-<p align="center">
-   <img alt="e" src="https://github.com/user-attachments/assets/72a1c230-22f6-4d7c-8db2-f91280b376b2" width="24%%"/>
-   <img alt="f" src="https://github.com/user-attachments/assets/d294b55e-70fc-4d25-b147-1e518ffa1aec" width="24%%"/>
-   <img alt="g" src="https://github.com/user-attachments/assets/78cbc23f-fa34-4c6b-83c2-70909327afd8" width="24%%"/>
-   <img alt="h" src="https://github.com/user-attachments/assets/3fd7c2b4-489a-4e53-84d0-87b83653fa44" width="24%%"/>
+<p align="left">
+   <img alt="e" src="https://github.com/user-attachments/assets/8f4d2e97-5c61-4b04-9dfd-623a8c153929" width="20%%"/>
+   <img alt="f" src="https://github.com/user-attachments/assets/be870581-59fc-4c4c-99ec-ec928d9b2cf9" width="20%%"/>
+   <img alt="g" src="https://github.com/user-attachments/assets/e29fd1ef-79ba-4b19-abfd-b94128fe399d" width="20%%"/>
+   <img alt="h" src="https://github.com/user-attachments/assets/2745ae13-081b-4306-b6c6-1df08d94c5f4" width="20%%"/>
 </p>
 
 ## Share stats to social media stories
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/ccab1d52-34d5-4978-9bd9-4e3783e6a9e5" width="24%%">
-  <img src="https://github.com/user-attachments/assets/2dcbd196-19df-4723-8aea-ff08b10999ea" width="24%%">
-  <img src="https://github.com/user-attachments/assets/ea83be08-9728-4596-914a-94e28d8dcfa7" width="24%%">
-  <img src="https://github.com/user-attachments/assets/4dbf3329-12a6-418e-b319-178a9f525c6f" width="24%%">
+<p align="left">
+  <img src="https://github.com/user-attachments/assets/ccab1d52-34d5-4978-9bd9-4e3783e6a9e5" width="20%%">
+  <img src="https://github.com/user-attachments/assets/2dcbd196-19df-4723-8aea-ff08b10999ea" width="20%%">
+  <img src="https://github.com/user-attachments/assets/ea83be08-9728-4596-914a-94e28d8dcfa7" width="20%%">
+  <img src="https://github.com/user-attachments/assets/4dbf3329-12a6-418e-b319-178a9f525c6f" width="20%%">
 </p>
-
