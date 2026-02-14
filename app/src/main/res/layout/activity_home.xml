@@ -26,11 +26,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:cardBackgroundColor="@color/very_light_grey"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/startButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -78,6 +78,7 @@
             android:id="@+id/startButtonImage"
             android:layout_width="200dp"
             android:layout_height="50dp"
+            android:importantForAccessibility="no"
             android:src="@drawable/start_workout_button"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -89,6 +90,7 @@
         <ImageView
             android:layout_width="435dp"
             android:layout_height="204dp"
+            android:importantForAccessibility="no"
             android:src="@drawable/start_workout_button_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -101,7 +103,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/special_gothic_semiexpanded_semibold"
             android:gravity="center"
-            android:text="start workout"
+            android:text="@string/start_workout1"
             android:textAlignment="center"
             android:textColor="@color/white_fix"
             android:textSize="16sp"
