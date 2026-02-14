@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:cardBackgroundColor="@color/very_light_grey"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
