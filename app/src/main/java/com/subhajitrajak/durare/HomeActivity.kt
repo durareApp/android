@@ -25,7 +25,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navOptions
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -34,9 +33,9 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.subhajitrajak.durare.exercise.ExerciseType
 import com.subhajitrajak.durare.databinding.ActivityHomeBinding
 import com.subhajitrajak.durare.databinding.DialogPermissionBinding
+import com.subhajitrajak.durare.exercise.ExerciseType
 import com.subhajitrajak.durare.ui.counter.CounterActivity
 import com.subhajitrajak.durare.ui.counter.CounterActivity.Companion.REQUIRED_PERMISSIONS
 import com.subhajitrajak.durare.ui.dashboard.WorkoutSetupDialog
