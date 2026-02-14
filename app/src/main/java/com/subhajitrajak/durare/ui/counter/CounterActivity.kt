@@ -37,21 +37,21 @@ import com.google.mlkit.vision.face.FaceDetectorOptions
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.subhajitrajak.durare.R
-import com.subhajitrajak.durare.exercise.chinUp.ChinUpPoseAnalyzer
-import com.subhajitrajak.durare.exercise.ExerciseFrameAnalyzer
-import com.subhajitrajak.durare.exercise.ExerciseType
-import com.subhajitrajak.durare.exercise.pushUp.PushUpFaceAnalyzer
 import com.subhajitrajak.durare.data.models.DailyPushStats
 import com.subhajitrajak.durare.data.models.DailyWorkoutStats
 import com.subhajitrajak.durare.data.repositories.StatsRepository
 import com.subhajitrajak.durare.databinding.ActivityCounterBinding
 import com.subhajitrajak.durare.exercise.BaseRepCounter
+import com.subhajitrajak.durare.exercise.ExerciseFrameAnalyzer
+import com.subhajitrajak.durare.exercise.ExerciseType
 import com.subhajitrajak.durare.exercise.RepCounterListener
-import com.subhajitrajak.durare.ui.shareStats.ShareStatsActivity
+import com.subhajitrajak.durare.exercise.chinUp.ChinUpPoseAnalyzer
 import com.subhajitrajak.durare.exercise.chinUp.ChinUpRepCounter
+import com.subhajitrajak.durare.exercise.pushUp.PushUpFaceAnalyzer
+import com.subhajitrajak.durare.exercise.pushUp.PushUpRepCounter
+import com.subhajitrajak.durare.ui.shareStats.ShareStatsActivity
 import com.subhajitrajak.durare.utils.Constants.DATE_FORMAT
 import com.subhajitrajak.durare.utils.Preferences
-import com.subhajitrajak.durare.exercise.pushUp.PushUpRepCounter
 import com.subhajitrajak.durare.utils.log
 import com.subhajitrajak.durare.utils.reminderUtils.RestAlarmReceiver
 import com.subhajitrajak.durare.utils.showToast
@@ -155,6 +155,10 @@ class CounterActivity : AppCompatActivity(), RepCounterListener {
             finish()
         }
 
+        binding.tutorial.setOnClickListener {
+            openInstructionsSheet()
+        }
+
         exerciseType = ExerciseType.valueOf(
             intent.getStringExtra("exercise_type") ?: ExerciseType.PUSH_UP.name
         )
@@ -226,6 +230,11 @@ class CounterActivity : AppCompatActivity(), RepCounterListener {
         updateTotalCount()
         updateTimerText()
         startUiTicker()
+    }
+
+    private fun openInstructionsSheet() {
+        val dialog = NeedHelpTutorialSheet()
+        dialog.show(supportFragmentManager, "TAG")
     }
 
     private fun startCamera() {

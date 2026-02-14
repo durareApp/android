@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/very_light_grey"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="48dp">
+
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tint="@color/dark_grey_85"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sf_pro_display_bold"
+            android:gravity="center"
+            android:paddingHorizontal="24dp"
+            android:text="Instructions"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:dividerColor="@color/light_grey_85"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/sf_pro_display_semibold"
+            android:paddingHorizontal="24dp"
+            android:text="1) Put Your Phone on the Floor"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:paddingHorizontal="24dp"
+            android:text="First, place your phone flat on the floor with the screen facing up. Don’t hold it in your hand. The front camera should be pointing up toward your face."
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+
+        <ImageView
+            android:layout_width="280dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:importantForAccessibility="no"
+            android:scaleType="fitStart"
+            android:src="@drawable/instruction_image_1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/sf_pro_display_semibold"
+            android:paddingHorizontal="24dp"
+            android:text="2) Show Your Full Face"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:paddingHorizontal="24dp"
+            android:text="Now get into your push-up position directly over the phone and look straight down at it. Make sure your entire face is visible on the screen. If your forehead or chin is cut off, the app won’t be able to count properly. Try to keep your face centered and make sure the room is well lit."
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="125dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter"
+            android:src="@drawable/instruction_image_2" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/sf_pro_display_semibold"
+            android:paddingHorizontal="24dp"
+            android:text="3) Move Close, Then Far"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:paddingHorizontal="24dp"
+            android:text="The app counts based on how close your face is to the phone. When you go down in a push-up and your face moves closer to the screen, that’s the down position. When you push back up and your face moves farther away, that’s the up position. One full down and up movement counts as one push-up."
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
