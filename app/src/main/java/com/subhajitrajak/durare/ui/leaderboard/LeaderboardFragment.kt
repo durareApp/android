@@ -75,6 +75,19 @@ class LeaderboardFragment : Fragment() {
                 log(errorMsg)
             }
         }
+
+        binding.swipeRefresh.apply {
+            setOnRefreshListener {
+                viewModel.loadLeaderboard()
+                isRefreshing = false
+            }
+
+            setProgressBackgroundColorSchemeResource(R.color.primary)
+            setColorSchemeResources(
+                R.color.white,
+                R.color.black
+            )
+        }
     }
 
     private fun setupTop3(newUsers: List<User>) {

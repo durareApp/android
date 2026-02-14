@@ -85,6 +85,20 @@ class AnalyticsFragment : Fragment() {
                 log(errorMsg)
             }
         }
+
+        binding.swipeRefresh.apply {
+            setOnRefreshListener {
+                viewModel.loadDailyStats()
+                viewModel.loadThisMonthPushups()
+                isRefreshing = false
+            }
+
+            setProgressBackgroundColorSchemeResource(R.color.primary)
+            setColorSchemeResources(
+                R.color.white,
+                R.color.black
+            )
+        }
     }
 
     private fun setupCharts() {
