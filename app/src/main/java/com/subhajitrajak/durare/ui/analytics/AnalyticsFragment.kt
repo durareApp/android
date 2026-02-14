@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.ColorUtils
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
@@ -28,7 +29,7 @@ class AnalyticsFragment : Fragment() {
     private var _binding: FragmentAnalyticsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: AnalyticsViewModel by viewModels {
+    private val viewModel: AnalyticsViewModel by activityViewModels {
         AnalyticsViewModelFactory()
     }
 
@@ -133,12 +134,6 @@ class AnalyticsFragment : Fragment() {
         }
         findNavController().navigate(R.id.action_analyticsFragment_to_daySummaryFragment, bundle)
         binding.loadingIndicator.removeWithAnim()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadDailyStats()
-        viewModel.loadThisMonthPushups()
     }
 
     override fun onDestroyView() {

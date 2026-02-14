@@ -17,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:animateLayoutChanges="true"
             android:paddingHorizontal="24dp"
             android:paddingTop="16dp"
             android:paddingBottom="128dp">
@@ -124,9 +123,9 @@
                 android:id="@+id/goalCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:cardBackgroundColor="@color/very_light_grey"
                 android:layout_marginTop="20dp"
+                android:visibility="visible"
+                app:cardBackgroundColor="@color/very_light_grey"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">
 
@@ -141,8 +140,8 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
                         android:fontFamily="@font/special_gothic_semiexpanded_medium"
                         android:text="@string/set_goal"
                         android:textColor="@color/grey"
@@ -168,7 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
@@ -341,7 +340,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="0dp"
@@ -376,7 +375,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:cardBackgroundColor="@color/very_light_grey"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">
@@ -471,7 +470,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:ignore="UseCompoundDrawables">
 
                 <TextView
@@ -498,7 +497,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:cardBackgroundColor="@color/very_light_grey"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">
@@ -537,19 +536,19 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:importantForAccessibility="no"
-                            android:src="@drawable/crown"
                             android:layout_gravity="center_vertical"
-                            android:elevation="1dp"/>
+                            android:elevation="1dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/crown" />
 
                         <TextView
                             android:id="@+id/firstCount"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
                             android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
                             android:fontFamily="@font/special_gothic_expanded_semibold"
+                            android:gravity="end"
                             android:text="@string/score_1"
                             android:textColor="@color/dark_grey_85"
                             android:textSize="16sp"
@@ -642,7 +641,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:ignore="UseCompoundDrawables">
 
                 <TextView
@@ -669,7 +668,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:cardBackgroundColor="@color/very_light_grey"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp">

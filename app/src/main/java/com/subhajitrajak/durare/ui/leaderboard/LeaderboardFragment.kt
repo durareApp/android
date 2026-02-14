@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.subhajitrajak.durare.R
 import com.subhajitrajak.durare.data.models.User
 import com.subhajitrajak.durare.databinding.FragmentLeaderboardBinding
-import com.subhajitrajak.durare.ui.dashboard.DashboardViewModel
-import com.subhajitrajak.durare.ui.dashboard.DashboardViewModelFactory
 import com.subhajitrajak.durare.utils.formatToShortNumber
 import com.subhajitrajak.durare.utils.hideWithAnim
 import com.subhajitrajak.durare.utils.log
@@ -24,8 +22,8 @@ class LeaderboardFragment : Fragment() {
     private var _binding: FragmentLeaderboardBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: DashboardViewModel by viewModels {
-        DashboardViewModelFactory(requireContext().applicationContext)
+    private val viewModel: LeaderboardViewModel by activityViewModels {
+        LeaderboardViewModelFactory()
     }
     private lateinit var adapter: LeaderboardAdapter
 
@@ -60,7 +58,6 @@ class LeaderboardFragment : Fragment() {
                 binding.userRankScore.text = currentUser.pushups.toString()
             }
 
-            binding.cardView.show()
             setupTop3(newUsers)
         }
 
@@ -81,6 +78,7 @@ class LeaderboardFragment : Fragment() {
     }
 
     private fun setupTop3(newUsers: List<User>) {
+        if (newUsers.size < 3) return
         val list = newUsers.take(3)
 
         binding.apply {
@@ -92,7 +90,7 @@ class LeaderboardFragment : Fragment() {
             secondPersonScore.text = list[1].pushups.formatToShortNumber()
             thirdPersonScore.text = list[2].pushups.formatToShortNumber()
 
-            Glide.with(requireContext()).apply {
+            Glide.with(this@LeaderboardFragment).apply {
                 load(list[0].userData.profilePictureUrl).into(firstPersonImage)
                 load(list[1].userData.profilePictureUrl).into(secondPersonImage)
                 load(list[2].userData.profilePictureUrl).into(thirdPersonImage)
@@ -111,14 +109,8 @@ class LeaderboardFragment : Fragment() {
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadLeaderboard()
     }
 }

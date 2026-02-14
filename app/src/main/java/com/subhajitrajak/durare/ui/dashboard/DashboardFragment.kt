@@ -14,7 +14,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -44,8 +44,8 @@ class DashboardFragment : Fragment() {
     private var borderAnimator: ValueAnimator? = null
     private var animator: ValueAnimator? = null
 
-    private val viewModel: DashboardViewModel by viewModels {
-        DashboardViewModelFactory(requireContext().applicationContext)
+    private val viewModel: DashboardViewModel by activityViewModels {
+        DashboardViewModelFactory()
     }
     private var isDark: Boolean = false
 
@@ -371,15 +371,5 @@ class DashboardFragment : Fragment() {
         animator?.cancel()
         animator = null
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.apply {
-            loadDashboardStats()
-            fetchLast30DaysPushupCounts()
-            loadCurrentStreak()
-            loadLeaderboard()
-        }
     }
 }

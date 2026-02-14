@@ -28,7 +28,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class DashboardRepository(context: Context) {
+class DashboardRepository() {
     private val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.US)
@@ -255,21 +255,7 @@ class DashboardRepository(context: Context) {
             .get(source)
             .await()
 
-        val highScoreUsers = mapDocumentsToUsers(highScoresSnapshot.documents)
-
-        if (highScoreUsers.size < 100) {
-            val othersSnapshot = db.collection(USERS)
-                .limit(100)
-                .get(source)
-                .await()
-
-            val otherUsers = mapDocumentsToUsers(othersSnapshot.documents)
-            val existingIds = highScoreUsers.map { it.userData.userId }.toSet()
-            val uniqueNewUsers = otherUsers.filter { it.userData.userId !in existingIds }
-            return (highScoreUsers + uniqueNewUsers).take(100)
-        }
-
-        return highScoreUsers
+        return mapDocumentsToUsers(highScoresSnapshot.documents)
     }
 
     private fun mapDocumentsToUsers(documents: List<DocumentSnapshot>): List<User> {
