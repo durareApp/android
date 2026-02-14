@@ -113,7 +113,6 @@ class HomeActivity : AppCompatActivity() {
             val areNavigationScreens =
                 (destination.id == R.id.dashboardFragment) || (destination.id == R.id.leaderboardFragment) || (destination.id == R.id.analyticsFragment)
             binding.bottomNav.visibility = if (areNavigationScreens) View.VISIBLE else View.GONE
-            binding.view.visibility = if (areNavigationScreens) View.VISIBLE else View.GONE
             binding.startButton.visibility = if (areNavigationScreens) View.VISIBLE else View.GONE
 
             lastDestinationIsNavScreen = destination.id == R.id.dashboardFragment ||

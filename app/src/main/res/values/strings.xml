@@ -79,7 +79,8 @@
     <string name="email">Email</string>
     <string name="skip">Skip</string>
     <string name="next">Next</string>
-    <string name="analytics">analytics</string>
+    <string name="analytics">progress</string>
+    <string name="analytics1">Progress</string>
     <string name="home">Home</string>
     <string name="daily_records">daily records</string>
     <string name="current_month_stats">current month stats</string>

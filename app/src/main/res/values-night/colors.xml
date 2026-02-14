@@ -2,7 +2,8 @@
 <resources>
     <color name="black">#FFFFFFFF</color>
     <color name="white">#FF000000</color>
-    <color name="semi_transparent_white">#80000000</color>
+    <color name="semi_transparent_white">#E6000000</color>
+    <color name="transparent">#00000000</color>
     <color name="very_dark_grey">#E6E6E6</color>
     <color name="dark_grey_85">#D9D9D9</color>
     <color name="dark_grey">#C0C0C0</color>
